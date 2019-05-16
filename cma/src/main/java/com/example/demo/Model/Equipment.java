@@ -19,7 +19,7 @@ public class Equipment {
     @Id
     @GeneratedValue(strategy=GenerationType.AUTO)
 
-    private Long id;
+    private Integer id;
     private String name;             //设备名称
     private String model;            //型号
     private String cpu;              //CPU
@@ -29,8 +29,8 @@ public class Equipment {
     private String application;      //用途
     private Byte state;              //使用情况（准用/停用）1/0
 
-    public void setId(Long id){this.id=id;}
-    public Long getId(){return this.id;}
+    public void setId(Integer id){this.id=id;}
+    public Integer getId(){return this.id;}
 
     public void setName(String name){this.name=name;}
     public String getName(){return this.name;}

@@ -1,25 +1,23 @@
 package com.example.demo.Controller;
 
+import com.alibaba.fastjson.JSONArray;
 import com.example.demo.Repository.EquipmentRepository;
 import com.example.demo.Model.Equipment;
 import com.example.demo.Exceptions.MyException;
 import com.example.demo.framework.Response;
-
+import java.util.ArrayList;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import com.alibaba.fastjson.JSONObject;
-import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.persistence.GeneratedValue;
 
 /**
  * @author yxp
  */
-@Service
-@Transactional
+
 @Controller
 @RequestMapping(path="/Equipment")
 public class EquipmentController {
@@ -36,11 +34,7 @@ public class EquipmentController {
             @RequestParam (value="equipmentNumber",required=false)String equipmentNumber,
             @RequestParam (value="application",required=false)String application,
             @RequestParam (value="state",required=false)Byte state){
-        Response response=new Response();
-        try {
-             if (ERepository.findByEquipmentNumber(equipmentNumber) != null) {
-                throw new Exception("the equipment:"+equipmentNumber+" exists!");
-            }
+            Response response=new Response();
             Equipment equipment = new Equipment();
             equipment.setName(name);
             equipment.setModel(model);
@@ -50,28 +44,25 @@ public class EquipmentController {
             equipment.setEquipmentNumber(equipmentNumber);
             equipment.setApplication(application);
             equipment.setState(state);
-            System.out.println(equipment);
-           // JSONObject ejson = JSONObject.parseObject(JSONObject.toJSONString(equipment));
+            ERepository.save(equipment);
+            System.out.println(equipment.getId());
+            JSONObject ejson = JSONObject.parseObject(JSONObject.toJSONString(equipment));
             response.code=200;
             response.data=null;
             response.setMessage("成功");
-        }catch(Exception e){
-            e.printStackTrace();
-            response.code=500;
-            response.msg=e.getMessage();
-        }
-        return response;
+            return response;
     }
 
-   /* @RequestMapping(value="/getOne/{id}",method=RequestMethod.GET)
+    @RequestMapping(value="/getOne/{id}",method=RequestMethod.GET)
     @ResponseBody
-    public Response getOne( @RequestParam (value="id",required=false)Integer id){
+    public Response getOne(@PathVariable("id") Integer id){
         Response response=new Response();
+        System.out.println("finfbyid:"+id);
         try {
             if (ERepository.findById(id) == null) {
-                throw new Exception("the equipment:"+id+"in not exist");
+                throw new Exception("ID:"+id+" does not exist");
             }
-            Equipment equipment = ERepository.findOne(id);
+            Equipment equipment = ERepository.findById(id);
             JSONObject ejson = JSONObject.parseObject(JSONObject.toJSONString(equipment));
             response.code=200;
             response.data=ejson;
@@ -82,5 +73,27 @@ public class EquipmentController {
                 response.msg=e.getMessage();
             }
         return response;
-        }*/
+        }
+
+    @RequestMapping(value="/getAll",method=RequestMethod.GET)
+    @ResponseBody
+    public Response getAll(){
+        Response response=new Response();
+        JSONObject alljson=new JSONObject();
+        Iterable<Equipment> list=ERepository.findAll();
+      /*  List<Equipment> list1=new ArrayList<>();
+        list.forEach(i->{list1.add(i);});*/
+        JSONArray jsons=new JSONArray();
+        for(int i = 0; i<((List<Equipment>) list).size(); i++)
+        {
+            JSONObject ejson = JSONObject.parseObject(JSONObject.toJSONString(((List<Equipment>) list).get(i)));
+            jsons.add(ejson);
+        }
+        alljson.put("Equipments",jsons);
+        response.code=200;
+        response.data=alljson;
+        response.msg="成功";
+        return response;
+    }
+
 }
