@@ -1,21 +1,25 @@
 package com.example.demo.Controller;
 
-import com.alibaba.fastjson.JSONArray;
 import com.example.demo.Repository.EquipmentRepository;
 import com.example.demo.Model.Equipment;
-import com.example.demo.Exceptions.MyException;
 import com.example.demo.framework.Response;
-import java.util.ArrayList;
+
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
+
 import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-import com.alibaba.fastjson.JSONObject;
 
-import javax.persistence.GeneratedValue;
+
 
 /**
  * @author yxp
+ *  code 200表示成功
+ *  code 5xx表示失败
+ *  装备信息管理
  */
 
 @Controller
@@ -23,6 +27,19 @@ import javax.persistence.GeneratedValue;
 public class EquipmentController {
     @Autowired
     private EquipmentRepository ERepository;
+
+    /**
+     * addEquipment
+     * @param name
+     * @param model
+     * @param cpu
+     * @param memory
+     * @param hardDisk
+     * @param equipmentNumber
+     * @param application
+     * @param state
+     * @return 返回code,msg,data=null
+     */
     @RequestMapping(path="add",method=RequestMethod.POST)
     @ResponseBody
     public Response addEquipment(
@@ -46,16 +63,21 @@ public class EquipmentController {
             equipment.setState(state);
             ERepository.save(equipment);
             System.out.println(equipment.getId());
-            JSONObject ejson = JSONObject.parseObject(JSONObject.toJSONString(equipment));
+           // JSONObject ejson = JSONObject.parseObject(JSONObject.toJSONString(equipment));
             response.code=200;
             response.data=null;
             response.setMessage("成功");
             return response;
     }
 
+    /**
+     * @param id
+     * @return 返回id对应的装备
+     *
+     */
     @RequestMapping(value="/getOne/{id}",method=RequestMethod.GET)
     @ResponseBody
-    public Response getOne(@PathVariable("id") Integer id){
+    public Response getOne(@PathVariable("id") long id){
         Response response=new Response();
         System.out.println("finfbyid:"+id);
         try {
@@ -74,6 +96,11 @@ public class EquipmentController {
             }
         return response;
         }
+
+    /**
+     * getAll
+     * @return code,msg,data=EQUIPMENT_INFO表
+     */
 
     @RequestMapping(value="/getAll",method=RequestMethod.GET)
     @ResponseBody
@@ -96,4 +123,79 @@ public class EquipmentController {
         return response;
     }
 
+    /**
+     * @param id
+     * @param name
+     * @param model
+     * @param cpu
+     * @param memory
+     * @param hardDisk
+     * @param equipmentNumber
+     * @param application
+     * @param state
+     * @return code,msg,data=null
+     */
+    @RequestMapping(value="/modifyOne/{id}",method = RequestMethod.POST)
+    @ResponseBody
+    public Response modifyOne(
+            @PathVariable("id") long id,
+            @RequestParam (value="name",required=false)String name,
+            @RequestParam (value="model",required=false)String model,
+            @RequestParam (value="cpu",required=false)String cpu,
+            @RequestParam (value="memory",required=false)String memory,
+            @RequestParam (value="hardDisk",required=false)String hardDisk,
+            @RequestParam (value="equipmentNumber",required=false)String equipmentNumber,
+            @RequestParam (value="application",required=false)String application,
+            @RequestParam (value="state",required=false)Byte state){
+        Response response=new Response();
+        try{
+            if(ERepository.findById(id)==null)
+                throw new Exception("Equipment ID:"+id+" doesn't exist");
+            Equipment equipment=ERepository.findById(id);
+            equipment.setState(state);
+            equipment.setApplication(application);
+            equipment.setEquipmentNumber(equipmentNumber);
+            equipment.setHardDisk(hardDisk);
+            equipment.setMemory(memory);
+            equipment.setModel(model);
+            equipment.setCpu(cpu);
+            equipment.setName(name);
+            JSONObject ejson = JSONObject.parseObject(JSONObject.toJSONString(equipment));
+            ERepository.save(equipment);
+            response.code=200;
+            response.msg="成功";
+            response.data=null;
+        }catch(Exception e)
+        {
+            e.printStackTrace();
+            response.code=500;
+            response.msg=e.getMessage();
+        }
+        return response;
+    }
+
+    /**
+     * @param id
+     * @return code,msg,data=null
+     */
+    @RequestMapping(value="/deleteOne/{id}",method = RequestMethod.POST)
+    @ResponseBody
+    public Response deleteOne(@PathVariable("id") long id)
+    {
+        Response response=new Response();
+        try{
+            if(ERepository.findById(id)==null)
+                throw new Exception("Equipment ID:"+id+" doesn't exist");
+            ERepository.deleteById(id);
+            response.data=null;
+            response.msg="成功";
+            response.code=200;
+
+        }catch(Exception e){
+            e.printStackTrace();
+            response.code=500;
+            response.msg=e.getMessage();
+        }
+        return response;
+    }
 }

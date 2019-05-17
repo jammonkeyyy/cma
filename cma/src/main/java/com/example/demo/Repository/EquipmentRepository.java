@@ -7,5 +7,5 @@ import org.springframework.data.repository.CrudRepository;
  * @author yxp
  */
 public interface EquipmentRepository extends JpaRepository<Equipment, Long> {
-   Equipment findById(Integer id);
+   Equipment findById(long id);
 }
