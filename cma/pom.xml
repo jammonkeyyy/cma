@@ -49,6 +49,12 @@
             <version>2.1.6.RELEASE</version>
         </dependency>
 
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+
         <!-- Use fastjson -->
         <dependency>
             <groupId>com.alibaba</groupId>
@@ -69,5 +75,4 @@
             </plugin>
         </plugins>
     </build>
-
 </project>

@@ -6,7 +6,7 @@ import com.example.demo.framework.Response;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-
+import com.alibaba.fastjson.JSON;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,8 +34,8 @@ public class EquipmentController {
      * @param model
      * @param cpu
      * @param memory
-     * @param hardDisk
-     * @param equipmentNumber
+    // * @param harddisk
+   //  * @param equipmentnumber
      * @param application
      * @param state
      * @return 返回code,msg,data=null
@@ -47,8 +47,8 @@ public class EquipmentController {
             @RequestParam (value="model",required=false)String model,
             @RequestParam (value="cpu",required=false)String cpu,
             @RequestParam (value="memory",required=false)String memory,
-            @RequestParam (value="hardDisk",required=false)String hardDisk,
-            @RequestParam (value="equipmentNumber",required=false)String equipmentNumber,
+          //  @RequestParam (value="hardDisk",required=false)String harddisk,
+          //  @RequestParam (value="equipmentNumber",required=false)String equipmentnumber,
             @RequestParam (value="application",required=false)String application,
             @RequestParam (value="state",required=false)Byte state){
             Response response=new Response();
@@ -57,8 +57,8 @@ public class EquipmentController {
             equipment.setModel(model);
             equipment.setCpu(cpu);
             equipment.setMemory(memory);
-            equipment.setHardDisk(hardDisk);
-            equipment.setEquipmentNumber(equipmentNumber);
+         //   equipment.setHardDisk(harddisk);
+         //   equipment.setEquipmentNumber(equipmentnumber);
             equipment.setApplication(application);
             equipment.setState(state);
             ERepository.save(equipment);
@@ -129,8 +129,8 @@ public class EquipmentController {
      * @param model
      * @param cpu
      * @param memory
-     * @param hardDisk
-     * @param equipmentNumber
+   //  * @param harddisk
+   //  * @param equipmentnumber
      * @param application
      * @param state
      * @return code,msg,data=null
@@ -143,8 +143,8 @@ public class EquipmentController {
             @RequestParam (value="model",required=false)String model,
             @RequestParam (value="cpu",required=false)String cpu,
             @RequestParam (value="memory",required=false)String memory,
-            @RequestParam (value="hardDisk",required=false)String hardDisk,
-            @RequestParam (value="equipmentNumber",required=false)String equipmentNumber,
+           // @RequestParam (value="hardDisk",required=false)String harddisk,
+           // @RequestParam (value="equipmentNumber",required=false)String equipmentnumber,
             @RequestParam (value="application",required=false)String application,
             @RequestParam (value="state",required=false)Byte state){
         Response response=new Response();
@@ -154,8 +154,8 @@ public class EquipmentController {
             Equipment equipment=ERepository.findById(id);
             equipment.setState(state);
             equipment.setApplication(application);
-            equipment.setEquipmentNumber(equipmentNumber);
-            equipment.setHardDisk(hardDisk);
+          //  equipment.setEquipmentNumber(equipmentnumber);
+           // equipment.setHardDisk(harddisk);
             equipment.setMemory(memory);
             equipment.setModel(model);
             equipment.setCpu(cpu);
